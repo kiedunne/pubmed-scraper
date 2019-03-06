@@ -14,18 +14,20 @@ def run_scraper
      @number = item.css("div.rprtnum.nohighlight span").text
      @name = item.css("div.rslt p.title").text
      @authors = item.css("div.rslt div.supp p.desc").text
-     @journal = item.css("div.rslt div.supp p.details span.jrnl[title]").text
-     @doi = item.css("div.rslt div.supp p.details span.jrnl")
-     @link = item.css("div.rslt p.title a[href]").text
+     @journal = item.css("div.rslt div.supp p.details span.jrnl").text
+     @doi = item.css("div.rslt div.supp p.details").text
+     @link = item.css("div.rslt p.title a[href]").first['href']
 
-    #  each_paper = Nokogiri::HTML(open("#{@link}", 'User-Agent' => URLS[:USER_AGENT]), nil, "UTF-8")
+     each_paper = Nokogiri::HTML(open("https://www.ncbi.nlm.nih.gov#{@link}", 'User-Agent' => URLS[:USER_AGENT]), nil, "UTF-8")
+     @abstract = each_paper.css("div.abstr div p").text
 
      papers_hash[@number.to_sym] = {
        name: @name,
        authors: @authors,
        journal: @journal,
        doi: @doi,
-       link: @link
+       link: @link,
+       abstract: @abstract
        }
     end 
     papers_hash
